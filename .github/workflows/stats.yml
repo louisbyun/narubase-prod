@@ -1,0 +1,76 @@
+name: Update download stats
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # daily at 00:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stats
+  cancel-in-progress: true
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Fetch release download counts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          mkdir -p stats
+
+          # All releases with per-asset counts
+          curl -sSL \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/releases?per_page=100" \
+            | jq '[.[] | {
+                tag: .tag_name,
+                name: .name,
+                published_at: .published_at,
+                draft: .draft,
+                prerelease: .prerelease,
+                assets: [.assets[] | {
+                  name: .name,
+                  size: .size,
+                  download_count: .download_count,
+                  updated_at: .updated_at
+                }]
+              }]' > stats/downloads.json
+
+          # Aggregate summary
+          jq --arg now "$(date -u +%Y-%m-%dT%H:%M:%SZ)" '{
+            updated_at: $now,
+            release_count: length,
+            total_downloads: ([.[].assets[].download_count] | add // 0),
+            per_release: [.[] | {
+              tag,
+              published_at,
+              prerelease,
+              total: ([.assets[].download_count] | add // 0),
+              by_asset: (.assets | map({(.name): .download_count}) | add // {})
+            }]
+          }' stats/downloads.json > stats/summary.json
+
+          echo "--- summary.json ---"
+          cat stats/summary.json
+
+      - name: Commit stats if changed
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add stats/
+          if git diff --cached --quiet; then
+            echo "No stats changes."
+          else
+            git commit -m "chore(stats): update download counts"
+            git push
+          fi
