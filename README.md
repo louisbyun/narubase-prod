@@ -61,7 +61,6 @@ The only network traffic the app makes:
 |---|---|---|
 | Your cloud provider's API (api.vultr.com, api.digitalocean.com, …) | When you refresh / open the app | Fetch your server list and metadata |
 | Your AI provider's API (Anthropic, OpenAI, etc.) | When you use the AI assistant | Forward your prompt + receive response |
-| `smtp.gmail.com` | Only when you submit the in-app Contact form | Send your message to our support inbox |
 
 That's it. No analytics endpoint. No license-server ping. No telemetry.
 
