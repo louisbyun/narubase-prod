@@ -1,0 +1,17 @@
+{
+  "updated_at": "2026-04-22T01:26:38Z",
+  "release_count": 1,
+  "total_downloads": 1,
+  "per_release": [
+    {
+      "tag": "v1.0.0",
+      "published_at": "2026-04-21T19:41:04Z",
+      "prerelease": false,
+      "total": 1,
+      "by_asset": {
+        "NaruBase-Cloud_1.0.0_x64-setup.exe": 0,
+        "NaruBase-Cloud_1.0.0_x64.msi": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "tag": "v1.0.0",
+    "name": "NaruBase Cloud v1.0.0 — Initial Release",
+    "published_at": "2026-04-21T19:41:04Z",
+    "draft": false,
+    "prerelease": false,
+    "assets": [
+      {
+        "name": "NaruBase-Cloud_1.0.0_x64-setup.exe",
+        "size": 5051467,
+        "download_count": 0,
+        "updated_at": "2026-04-21T20:06:06Z"
+      },
+      {
+        "name": "NaruBase-Cloud_1.0.0_x64.msi",
+        "size": 7979008,
+        "download_count": 1,
+        "updated_at": "2026-04-21T20:05:54Z"
+      }
+    ]
+  }
+]
